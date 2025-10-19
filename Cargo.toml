@@ -1,0 +1,55 @@
+[package]
+name = "developer-sdk"
+version = "0.1.0"
+edition = "2021"
+authors = ["BTCDecoded Contributors"]
+description = "Governance infrastructure and composition framework for Bitcoin"
+license = "MIT"
+repository = "https://github.com/BTCDecoded/developer-sdk"
+homepage = "https://github.com/BTCDecoded/developer-sdk"
+documentation = "https://docs.rs/developer-sdk"
+keywords = ["bitcoin", "governance", "cryptography", "consensus"]
+categories = ["cryptography", "development-tools"]
+
+[dependencies]
+# Governance cryptography (Bitcoin-compatible)
+secp256k1 = { version = "=0.28.2", features = ["rand", "global-context"] }
+bitcoin = "=0.31.2"  # For message signing standards
+sha2 = "=0.10.9"
+
+# Serialization
+serde = { version = "=1.0.226", features = ["derive"] }
+serde_json = "=1.0.145"
+
+# Error handling
+thiserror = "=1.0.69"
+
+# Encoding
+hex = "=0.4.3"
+base64 = "=0.21.5"
+
+# Random number generation
+rand = "=0.8.5"
+
+# Date/time
+chrono = { version = "=0.4.35", features = ["serde"] }
+
+# CLI dependencies
+clap = { version = "=4.4.11", features = ["derive"] }
+
+[dev-dependencies]
+# Testing
+criterion = "=0.5.1"  # Benchmarking
+tempfile = "=3.8.1"  # Temporary files for tests
+
+[[bin]]
+name = "btcdecoded-keygen"
+path = "src/bin/btcdecoded-keygen.rs"
+
+[[bin]]
+name = "btcdecoded-sign"
+path = "src/bin/btcdecoded-sign.rs"
+
+[[bin]]
+name = "btcdecoded-verify"
+path = "src/bin/btcdecoded-verify.rs"

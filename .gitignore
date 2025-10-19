@@ -1,0 +1,28 @@
+# Rust
+/target/
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+/book/
+/doc/
+
+# Coverage
+tarpaulin-report.html
+lcov.info
+
+# Benchmarks
+criterion/
+
+
+
+
