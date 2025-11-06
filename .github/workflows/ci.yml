@@ -15,7 +15,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.82.0
+          toolchain: 1.88.0
       - name: Cache cargo registry
         uses: actions/cache@v3
         with:
@@ -42,7 +42,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.82.0
+          toolchain: 1.88.0
           components: clippy, rustfmt
       - name: Cache cargo registry
         uses: actions/cache@v3
@@ -72,7 +72,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.82.0
+          toolchain: 1.88.0
       - name: Cache cargo registry
         uses: actions/cache@v3
         with:
@@ -89,9 +89,9 @@ jobs:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Install tarpaulin
-        run: cargo install cargo-tarpaulin
+        run: cargo install cargo-tarpaulin --version 0.27.0
       - name: Generate coverage
-        run: cargo tarpaulin --workspace --exclude-files "target/*" --exclude-files "src/bin/*" --out Xml --output-dir coverage
+        run: cargo tarpaulin --workspace --exclude-files "target/*" --exclude-files "src/bin/*" --out xml --output-dir coverage
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
@@ -106,7 +106,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.82.0
+          toolchain: 1.88.0
       - name: Cache cargo registry
         uses: actions/cache@v3
         with:
