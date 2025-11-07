@@ -2,8 +2,8 @@
 //!
 //! Tests for multisig threshold validation and signature collection.
 
-use developer_sdk::governance::{GovernanceKeypair, GovernanceMessage, Multisig};
-use developer_sdk::sign_message;
+use bllvm_sdk::governance::{GovernanceKeypair, GovernanceMessage, Multisig};
+use bllvm_sdk::sign_message;
 
 #[test]
 fn test_multisig_creation() {

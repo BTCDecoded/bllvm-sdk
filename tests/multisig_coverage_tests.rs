@@ -1,7 +1,7 @@
 //! Additional tests for multisig module to improve coverage.
 
-use developer_sdk::governance::{GovernanceKeypair, Multisig, GovernanceError};
-use developer_sdk::sign_message;
+use bllvm_sdk::governance::{GovernanceKeypair, Multisig, GovernanceError};
+use bllvm_sdk::sign_message;
 
 #[test]
 fn test_multisig_debug_format() {

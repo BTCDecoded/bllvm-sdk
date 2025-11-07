@@ -1,12 +1,12 @@
 //! Type Conversions
 //!
-//! Conversions between developer-sdk composition types and reference-node module types.
+//! Conversions between bllvm-sdk composition types and bllvm-node module types.
 
 use std::collections::HashMap;
 use crate::composition::types::ModuleInfo;
-use reference_node::module::registry::DiscoveredModule as RefDiscoveredModule;
-use reference_node::module::traits::ModuleMetadata as RefModuleMetadata;
-use reference_node::module::traits::ModuleError as RefModuleError;
+use bllvm_node::module::registry::DiscoveredModule as RefDiscoveredModule;
+use bllvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
+use bllvm_node::module::traits::ModuleError as RefModuleError;
 
 impl From<&RefDiscoveredModule> for ModuleInfo {
     fn from(discovered: &RefDiscoveredModule) -> Self {

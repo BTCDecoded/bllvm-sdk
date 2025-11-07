@@ -2,8 +2,8 @@
 //!
 //! Comprehensive integration tests for governance crypto operations.
 
-use developer_sdk::governance::{GovernanceKeypair, GovernanceMessage, Multisig};
-use developer_sdk::sign_message;
+use bllvm_sdk::governance::{GovernanceKeypair, GovernanceMessage, Multisig};
+use bllvm_sdk::sign_message;
 
 #[test]
 fn test_complete_governance_workflow() {
@@ -68,7 +68,7 @@ fn test_different_message_types() {
         commit_hash: "abc123".to_string(),
     };
     let release_sig = sign_message(&keypair.secret_key, &release_msg.to_signing_bytes()).unwrap();
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &release_sig,
         &release_msg.to_signing_bytes(),
         &keypair.public_key(),
@@ -81,7 +81,7 @@ fn test_different_message_types() {
         version: "v2.0.0".to_string(),
     };
     let module_sig = sign_message(&keypair.secret_key, &module_msg.to_signing_bytes()).unwrap();
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &module_sig,
         &module_msg.to_signing_bytes(),
         &keypair.public_key(),
@@ -94,7 +94,7 @@ fn test_different_message_types() {
         purpose: "development".to_string(),
     };
     let budget_sig = sign_message(&keypair.secret_key, &budget_msg.to_signing_bytes()).unwrap();
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &budget_sig,
         &budget_msg.to_signing_bytes(),
         &keypair.public_key(),
@@ -116,7 +116,7 @@ fn test_signature_cross_verification() {
     let signature = sign_message(&keypair1.secret_key, &message.to_signing_bytes()).unwrap();
 
     // Verify with keypair1 (should succeed)
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &signature,
         &message.to_signing_bytes(),
         &keypair1.public_key(),
@@ -124,7 +124,7 @@ fn test_signature_cross_verification() {
     .unwrap());
 
     // Verify with keypair2 (should fail)
-    assert!(!developer_sdk::governance::verify_signature(
+    assert!(!bllvm_sdk::governance::verify_signature(
         &signature,
         &message.to_signing_bytes(),
         &keypair2.public_key(),

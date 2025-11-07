@@ -1,19 +1,19 @@
 //! Module Registry
 //!
 //! High-level module registry API for discovering, installing, updating,
-//! and removing modules. Wraps reference-node module registry functionality.
+//! and removing modules. Wraps bllvm-node module registry functionality.
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use crate::composition::types::*;
 use crate::composition::conversion::*;
-use reference_node::module::registry::{
+use bllvm_node::module::registry::{
     ModuleDiscovery as RefModuleDiscovery,
     DiscoveredModule as RefDiscoveredModule,
     ModuleDependencies as RefModuleDependencies,
     ModuleManifest as RefModuleManifest,
 };
-use reference_node::module::traits::ModuleError as RefModuleError;
+use bllvm_node::module::traits::ModuleError as RefModuleError;
 
 /// Module registry for managing module lifecycle
 pub struct ModuleRegistry {

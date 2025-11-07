@@ -1,6 +1,6 @@
 //! Additional tests for CLI output module to improve coverage.
 
-use developer_sdk::cli::output::{OutputFormat, OutputFormatter};
+use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use serde_json::json;
 
 #[test]

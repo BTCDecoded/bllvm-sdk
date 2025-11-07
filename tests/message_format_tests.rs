@@ -2,7 +2,7 @@
 //!
 //! Tests for message serialization and format consistency.
 
-use developer_sdk::governance::GovernanceMessage;
+use bllvm_sdk::governance::GovernanceMessage;
 use serde_json;
 
 #[test]

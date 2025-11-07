@@ -1,6 +1,6 @@
 //! Additional tests for governance keys module to improve coverage.
 
-use developer_sdk::governance::{GovernanceKeypair, PublicKey, GovernanceError};
+use bllvm_sdk::governance::{GovernanceKeypair, PublicKey, GovernanceError};
 
 #[test]
 fn test_governance_keypair_debug_format() {

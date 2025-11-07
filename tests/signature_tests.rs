@@ -2,8 +2,8 @@
 //!
 //! Tests for signature creation and verification.
 
-use developer_sdk::governance::{GovernanceKeypair, Signature};
-use developer_sdk::sign_message;
+use bllvm_sdk::governance::{GovernanceKeypair, Signature};
+use bllvm_sdk::sign_message;
 
 #[test]
 fn test_signature_creation_and_verification() {
@@ -13,7 +13,7 @@ fn test_signature_creation_and_verification() {
     let signature = sign_message(&keypair.secret_key, message).unwrap();
 
     let verified =
-        developer_sdk::governance::verify_signature(&signature, message, &keypair.public_key())
+        bllvm_sdk::governance::verify_signature(&signature, message, &keypair.public_key())
             .unwrap();
 
     assert!(verified);
@@ -34,7 +34,7 @@ fn test_signature_serialization_roundtrip() {
 
     // Should still verify
     let verified =
-        developer_sdk::governance::verify_signature(&reconstructed, message, &keypair.public_key())
+        bllvm_sdk::governance::verify_signature(&reconstructed, message, &keypair.public_key())
             .unwrap();
 
     assert!(verified);
@@ -54,28 +54,28 @@ fn test_signature_with_different_messages() {
     assert_ne!(signature1, signature2);
 
     // Each signature should only verify for its message
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &signature1,
         message1,
         &keypair.public_key(),
     )
     .unwrap());
 
-    assert!(!developer_sdk::governance::verify_signature(
+    assert!(!bllvm_sdk::governance::verify_signature(
         &signature1,
         message2,
         &keypair.public_key(),
     )
     .unwrap());
 
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &signature2,
         message2,
         &keypair.public_key(),
     )
     .unwrap());
 
-    assert!(!developer_sdk::governance::verify_signature(
+    assert!(!bllvm_sdk::governance::verify_signature(
         &signature2,
         message1,
         &keypair.public_key(),
@@ -92,7 +92,7 @@ fn test_signature_with_different_keys() {
     let signature = sign_message(&keypair1.secret_key, message).unwrap();
 
     // Should verify with keypair1
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &signature,
         message,
         &keypair1.public_key(),
@@ -100,7 +100,7 @@ fn test_signature_with_different_keys() {
     .unwrap());
 
     // Should not verify with keypair2
-    assert!(!developer_sdk::governance::verify_signature(
+    assert!(!bllvm_sdk::governance::verify_signature(
         &signature,
         message,
         &keypair2.public_key(),
@@ -122,14 +122,14 @@ fn test_signature_deterministic() {
     // Both should be valid regardless
 
     // But both should verify
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &signature1,
         message,
         &keypair.public_key(),
     )
     .unwrap());
 
-    assert!(developer_sdk::governance::verify_signature(
+    assert!(bllvm_sdk::governance::verify_signature(
         &signature2,
         message,
         &keypair.public_key(),

@@ -1,13 +1,13 @@
 [package]
-name = "developer-sdk"
+name = "bllvm-sdk"
 version = "0.1.0"
 edition = "2021"
 authors = ["Bitcoin Commons Contributors"]
 description = "Bitcoin Commons software developer kit, governance infrastructure and composition framework for Bitcoin"
 license = "MIT"
-repository = "https://github.com/BTCDecoded/developer-sdk"
-homepage = "https://github.com/BTCDecoded/developer-sdk"
-documentation = "https://docs.rs/developer-sdk"
+repository = "https://github.com/BTCDecoded/bllvm-sdk"
+homepage = "https://github.com/BTCDecoded/bllvm-sdk"
+documentation = "https://docs.rs/bllvm-sdk"
 keywords = ["bitcoin", "governance", "cryptography", "consensus"]
 categories = ["cryptography", "development-tools"]
 
@@ -42,7 +42,7 @@ clap = { version = "=4.4.11", features = ["derive"] }
 
 # Composition framework dependencies
 toml = "=0.8.2"
-reference-node = { path = "../reference-node" }
+bllvm-node = { path = "../bllvm-node", package = "bllvm-node" }
 tokio = { version = "=1.35.1", features = ["rt", "macros", "sync"] }
 
 [dev-dependencies]

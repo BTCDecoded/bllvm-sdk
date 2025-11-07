@@ -11,7 +11,7 @@
 //! This is **Tier 5** of the 5-tier BTCDecoded architecture:
 //!
 //! <!--
-//! Orange Paper -> consensus-proof -> protocol-engine -> reference-node -> developer-sdk
+//! bllvm-spec (Orange Paper) -> bllvm-consensus -> bllvm-protocol -> bllvm-node -> bllvm-sdk
 //! -->
 //!
 //! ## Core Components

@@ -8,14 +8,14 @@ use tokio::sync::Mutex;
 use crate::composition::types::*;
 use crate::composition::registry::ModuleRegistry;
 use crate::composition::conversion::*;
-use reference_node::module::manager::ModuleManager;
-use reference_node::module::traits::ModuleMetadata as RefModuleMetadata;
+use bllvm_node::module::manager::ModuleManager;
+use bllvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
 
 /// Module lifecycle manager
 pub struct ModuleLifecycle {
     /// Module registry reference
     pub(crate) registry: ModuleRegistry,
-    /// Reference to reference-node ModuleManager (if available)
+    /// Reference to bllvm-node ModuleManager (if available)
     module_manager: Option<Arc<Mutex<ModuleManager>>>,
     /// Module status cache
     status_cache: HashMap<String, ModuleStatus>,
