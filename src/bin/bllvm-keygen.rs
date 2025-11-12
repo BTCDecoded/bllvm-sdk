@@ -3,8 +3,8 @@
 //! Generate governance keypairs for Bitcoin governance operations.
 
 use clap::Parser;
-use developer_sdk::governance::GovernanceKeypair;
-use developer_sdk::cli::output::{OutputFormat, OutputFormatter};
+use bllvm_sdk::governance::GovernanceKeypair;
+use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use std::fs;
 // No need for Path import
 

@@ -3,9 +3,9 @@
 //! Verify governance signatures and multisig thresholds.
 
 use clap::{Parser, Subcommand};
-use developer_sdk::governance::{GovernanceMessage, Multisig, Signature, PublicKey};
-use developer_sdk::cli::output::{OutputFormat, OutputFormatter};
-use developer_sdk::cli::input::{parse_comma_separated, parse_threshold};
+use bllvm_sdk::governance::{GovernanceMessage, Multisig, Signature, PublicKey};
+use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use bllvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
 use std::fs;
 use std::path::Path;
 
@@ -128,7 +128,7 @@ fn verify_message(args: &Args) -> Result<VerificationResult, Box<dyn std::error:
     for signature in &signatures {
         let mut verified = false;
         for public_key in &public_keys {
-            if developer_sdk::governance::verify_signature(signature, &message_bytes, public_key)? {
+            if bllvm_sdk::governance::verify_signature(signature, &message_bytes, public_key)? {
                 verified = true;
                 break;
             }

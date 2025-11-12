@@ -3,7 +3,7 @@
 //! Command-line interface for composing Bitcoin nodes from modules.
 
 use clap::{Parser, Subcommand};
-use developer_sdk::composition::*;
+use bllvm_sdk::composition::*;
 use std::path::PathBuf;
 
 #[derive(Parser)]
