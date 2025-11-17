@@ -65,3 +65,15 @@ path = "src/bin/bllvm-verify.rs"
 [[bin]]
 name = "bllvm-compose"
 path = "src/bin/bllvm-compose.rs"
+
+[[bin]]
+name = "bllvm-sign-binary"
+path = "src/bin/bllvm-sign-binary.rs"
+
+[[bin]]
+name = "bllvm-verify-binary"
+path = "src/bin/bllvm-verify-binary.rs"
+
+[[bin]]
+name = "bllvm-aggregate-signatures"
+path = "src/bin/bllvm-aggregate-signatures.rs"
