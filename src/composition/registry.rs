@@ -132,7 +132,7 @@ impl ModuleRegistry {
             // TODO: Check if module is running and stop it first
             // For now, this is a placeholder
             std::fs::remove_dir_all(dir)
-                .map_err(|e| CompositionError::IoError(e))?;
+                .map_err(CompositionError::IoError)?;
         }
         
         // Refresh discovered modules

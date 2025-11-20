@@ -62,7 +62,7 @@ impl NodeConfig {
     /// Load configuration from TOML file
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Self> {
         let contents = std::fs::read_to_string(path.as_ref())
-            .map_err(|e| CompositionError::IoError(e))?;
+            .map_err(CompositionError::IoError)?;
         
         let config: NodeConfig = toml::from_str(&contents)
             .map_err(|e| CompositionError::InvalidConfiguration(
@@ -80,7 +80,7 @@ impl NodeConfig {
             ))?;
         
         std::fs::write(path.as_ref(), toml_string)
-            .map_err(|e| CompositionError::IoError(e))?;
+            .map_err(CompositionError::IoError)?;
         
         Ok(())
     }
