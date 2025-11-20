@@ -107,7 +107,3 @@ mod tests {
         assert!(result.unwrap().contains("test"));
     }
 }
-
-
-
-

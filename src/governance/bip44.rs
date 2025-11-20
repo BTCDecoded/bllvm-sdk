@@ -7,7 +7,9 @@
 //!
 //! Example: m/44'/0'/0'/0/0 (Bitcoin mainnet first address)
 
-use crate::governance::bip32::{ExtendedPrivateKey, ExtendedPublicKey, derive_master_key, derive_child_private};
+use crate::governance::bip32::{
+    derive_child_private, derive_master_key, ExtendedPrivateKey, ExtendedPublicKey,
+};
 use crate::governance::error::{GovernanceError, GovernanceResult};
 
 /// BIP44 purpose (always 44 for multi-account hierarchy)
@@ -42,9 +44,10 @@ impl CoinType {
             2 => Ok(CoinType::Litecoin),
             3 => Ok(CoinType::Dogecoin),
             60 => Ok(CoinType::Ethereum),
-            _ => Err(GovernanceError::InvalidInput(
-                format!("Unsupported coin type: {}", value)
-            )),
+            _ => Err(GovernanceError::InvalidInput(format!(
+                "Unsupported coin type: {}",
+                value
+            ))),
         }
     }
 }
@@ -81,12 +84,7 @@ pub struct Bip44Path {
 
 impl Bip44Path {
     /// Create a new BIP44 path
-    pub fn new(
-        coin_type: CoinType,
-        account: u32,
-        change: ChangeChain,
-        address_index: u32,
-    ) -> Self {
+    pub fn new(coin_type: CoinType, account: u32, change: ChangeChain, address_index: u32) -> Self {
         Bip44Path {
             purpose: BIP44_PURPOSE,
             coin_type,
@@ -110,7 +108,7 @@ impl Bip44Path {
     pub fn from_string(path_str: &str) -> GovernanceResult<Self> {
         // Remove "m/" prefix if present
         let path_str = path_str.strip_prefix("m/").unwrap_or(path_str);
-        
+
         let parts: Vec<&str> = path_str.split('/').collect();
         if parts.len() != 5 {
             return Err(GovernanceError::InvalidInput(
@@ -120,39 +118,47 @@ impl Bip44Path {
 
         // Parse purpose (should be 44')
         let purpose_str = parts[0].trim_end_matches('\'');
-        let purpose: u32 = purpose_str.parse()
+        let purpose: u32 = purpose_str
+            .parse()
             .map_err(|_| GovernanceError::InvalidInput("Invalid purpose".to_string()))?;
-        
+
         if purpose != BIP44_PURPOSE {
-            return Err(GovernanceError::InvalidInput(
-                format!("Purpose must be {} for BIP44", BIP44_PURPOSE)
-            ));
+            return Err(GovernanceError::InvalidInput(format!(
+                "Purpose must be {} for BIP44",
+                BIP44_PURPOSE
+            )));
         }
 
         // Parse coin_type (should be hardened)
         let coin_type_str = parts[1].trim_end_matches('\'');
-        let coin_type_val: u32 = coin_type_str.parse()
+        let coin_type_val: u32 = coin_type_str
+            .parse()
             .map_err(|_| GovernanceError::InvalidInput("Invalid coin type".to_string()))?;
         let coin_type = CoinType::from_value(coin_type_val)?;
 
         // Parse account (should be hardened)
         let account_str = parts[2].trim_end_matches('\'');
-        let account: u32 = account_str.parse()
+        let account: u32 = account_str
+            .parse()
             .map_err(|_| GovernanceError::InvalidInput("Invalid account".to_string()))?;
 
         // Parse change (not hardened)
-        let change_val: u32 = parts[3].parse()
+        let change_val: u32 = parts[3]
+            .parse()
             .map_err(|_| GovernanceError::InvalidInput("Invalid change".to_string()))?;
         let change = match change_val {
             0 => ChangeChain::External,
             1 => ChangeChain::Internal,
-            _ => return Err(GovernanceError::InvalidInput(
-                "Change must be 0 (external) or 1 (internal)".to_string()
-            )),
+            _ => {
+                return Err(GovernanceError::InvalidInput(
+                    "Change must be 0 (external) or 1 (internal)".to_string(),
+                ))
+            }
         };
 
         // Parse address_index (not hardened)
-        let address_index: u32 = parts[4].parse()
+        let address_index: u32 = parts[4]
+            .parse()
             .map_err(|_| GovernanceError::InvalidInput("Invalid address index".to_string()))?;
 
         Ok(Bip44Path {
@@ -183,11 +189,11 @@ impl Bip44Path {
     ) -> GovernanceResult<(ExtendedPrivateKey, ExtendedPublicKey)> {
         // Build derivation path indices (all hardened for purpose, coin_type, account)
         let indices = vec![
-            0x80000000 | self.purpose,      // purpose' (hardened)
+            0x80000000 | self.purpose,           // purpose' (hardened)
             0x80000000 | self.coin_type.value(), // coin_type' (hardened)
-            0x80000000 | self.account,     // account' (hardened)
-            self.change.value(),            // change (not hardened)
-            self.address_index,             // address_index (not hardened)
+            0x80000000 | self.account,           // account' (hardened)
+            self.change.value(),                 // change (not hardened)
+            self.address_index,                  // address_index (not hardened)
         ];
 
         // Derive through path
@@ -206,11 +212,11 @@ impl Bip44Path {
     /// Get derivation path as vector of indices (for use with BIP32)
     pub fn to_indices(&self) -> Vec<u32> {
         vec![
-            0x80000000 | self.purpose,      // purpose' (hardened)
+            0x80000000 | self.purpose,           // purpose' (hardened)
             0x80000000 | self.coin_type.value(), // coin_type' (hardened)
-            0x80000000 | self.account,     // account' (hardened)
-            self.change.value(),            // change (not hardened)
-            self.address_index,             // address_index (not hardened)
+            0x80000000 | self.account,           // account' (hardened)
+            self.change.value(),                 // change (not hardened)
+            self.address_index,                  // address_index (not hardened)
         ]
     }
 }
@@ -297,7 +303,7 @@ mod tests {
     fn test_bip44_path_string() {
         let path = Bip44Path::bitcoin_mainnet(0, ChangeChain::External, 0);
         assert_eq!(path.to_string(), "m/44/0'/0'/0/0");
-        
+
         let parsed = Bip44Path::from_string("m/44'/0'/0'/0/0").unwrap();
         assert_eq!(parsed.purpose, 44);
         assert_eq!(parsed.coin_type, CoinType::Bitcoin);
@@ -310,10 +316,10 @@ mod tests {
     fn test_bip44_path_derivation() {
         let seed = b"test seed for BIP44 derivation";
         let (master_priv, _) = derive_master_key(seed).unwrap();
-        
+
         let path = Bip44Path::bitcoin_mainnet(0, ChangeChain::External, 0);
         let (derived_priv, derived_pub) = path.derive(&master_priv).unwrap();
-        
+
         assert_eq!(derived_priv.depth, 5); // 5 levels: purpose, coin, account, change, address
         assert_eq!(derived_pub.depth, 5);
     }
@@ -322,22 +328,27 @@ mod tests {
     fn test_bip44_wallet() {
         let seed = b"test seed for BIP44 wallet";
         let wallet = Bip44Wallet::from_seed(seed, CoinType::Bitcoin).unwrap();
-        
+
         let (receiving_priv, receiving_pub) = wallet.receiving_address(0, 0).unwrap();
         let (change_priv, change_pub) = wallet.change_address(0, 0).unwrap();
-        
+
         // Receiving and change addresses should be different
-        assert_ne!(receiving_priv.private_key_bytes(), change_priv.private_key_bytes());
-        assert_ne!(receiving_pub.public_key_bytes(), change_pub.public_key_bytes());
+        assert_ne!(
+            receiving_priv.private_key_bytes(),
+            change_priv.private_key_bytes()
+        );
+        assert_ne!(
+            receiving_pub.public_key_bytes(),
+            change_pub.public_key_bytes()
+        );
     }
 
     #[test]
     fn test_coin_types() {
         assert_eq!(CoinType::Bitcoin.value(), 0);
         assert_eq!(CoinType::BitcoinTestnet.value(), 1);
-        
+
         let coin = CoinType::from_value(0).unwrap();
         assert_eq!(coin, CoinType::Bitcoin);
     }
 }
-

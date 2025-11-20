@@ -54,33 +54,25 @@ fn test_signature_with_different_messages() {
     assert_ne!(signature1, signature2);
 
     // Each signature should only verify for its message
-    assert!(bllvm_sdk::governance::verify_signature(
-        &signature1,
-        message1,
-        &keypair.public_key(),
-    )
-    .unwrap());
+    assert!(
+        bllvm_sdk::governance::verify_signature(&signature1, message1, &keypair.public_key(),)
+            .unwrap()
+    );
 
-    assert!(!bllvm_sdk::governance::verify_signature(
-        &signature1,
-        message2,
-        &keypair.public_key(),
-    )
-    .unwrap());
+    assert!(
+        !bllvm_sdk::governance::verify_signature(&signature1, message2, &keypair.public_key(),)
+            .unwrap()
+    );
 
-    assert!(bllvm_sdk::governance::verify_signature(
-        &signature2,
-        message2,
-        &keypair.public_key(),
-    )
-    .unwrap());
+    assert!(
+        bllvm_sdk::governance::verify_signature(&signature2, message2, &keypair.public_key(),)
+            .unwrap()
+    );
 
-    assert!(!bllvm_sdk::governance::verify_signature(
-        &signature2,
-        message1,
-        &keypair.public_key(),
-    )
-    .unwrap());
+    assert!(
+        !bllvm_sdk::governance::verify_signature(&signature2, message1, &keypair.public_key(),)
+            .unwrap()
+    );
 }
 
 #[test]
@@ -92,20 +84,16 @@ fn test_signature_with_different_keys() {
     let signature = sign_message(&keypair1.secret_key, message).unwrap();
 
     // Should verify with keypair1
-    assert!(bllvm_sdk::governance::verify_signature(
-        &signature,
-        message,
-        &keypair1.public_key(),
-    )
-    .unwrap());
+    assert!(
+        bllvm_sdk::governance::verify_signature(&signature, message, &keypair1.public_key(),)
+            .unwrap()
+    );
 
     // Should not verify with keypair2
-    assert!(!bllvm_sdk::governance::verify_signature(
-        &signature,
-        message,
-        &keypair2.public_key(),
-    )
-    .unwrap());
+    assert!(
+        !bllvm_sdk::governance::verify_signature(&signature, message, &keypair2.public_key(),)
+            .unwrap()
+    );
 }
 
 #[test]
@@ -122,19 +110,15 @@ fn test_signature_deterministic() {
     // Both should be valid regardless
 
     // But both should verify
-    assert!(bllvm_sdk::governance::verify_signature(
-        &signature1,
-        message,
-        &keypair.public_key(),
-    )
-    .unwrap());
+    assert!(
+        bllvm_sdk::governance::verify_signature(&signature1, message, &keypair.public_key(),)
+            .unwrap()
+    );
 
-    assert!(bllvm_sdk::governance::verify_signature(
-        &signature2,
-        message,
-        &keypair.public_key(),
-    )
-    .unwrap());
+    assert!(
+        bllvm_sdk::governance::verify_signature(&signature2, message, &keypair.public_key(),)
+            .unwrap()
+    );
 }
 
 #[test]

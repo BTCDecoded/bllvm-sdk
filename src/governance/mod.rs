@@ -8,16 +8,16 @@
 //! - Multisig threshold logic
 //! - Message formats for governance decisions
 
+pub mod bip32;
+pub mod bip39;
+pub mod bip44;
 pub mod error;
 pub mod keys;
 pub mod messages;
 pub mod multisig;
+pub mod psbt;
 pub mod signatures;
 pub mod verification;
-pub mod bip32;
-pub mod bip39;
-pub mod bip44;
-pub mod psbt;
 
 // Re-export main types
 pub use error::{GovernanceError, GovernanceResult};
@@ -26,7 +26,3 @@ pub use messages::GovernanceMessage;
 pub use multisig::Multisig;
 pub use signatures::Signature;
 pub use verification::verify_signature;
-
-
-
-

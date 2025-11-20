@@ -41,8 +41,7 @@ fn test_keypair_serialization_roundtrip() {
 
     // Test public key serialization
     let pubkey_bytes = keypair.public_key().to_bytes();
-    let reconstructed_pubkey =
-        bllvm_sdk::governance::PublicKey::from_bytes(&pubkey_bytes).unwrap();
+    let reconstructed_pubkey = bllvm_sdk::governance::PublicKey::from_bytes(&pubkey_bytes).unwrap();
     assert_eq!(keypair.public_key(), reconstructed_pubkey);
 
     // Test secret key serialization
@@ -115,7 +114,3 @@ fn test_keypair_equality() {
     // Same keypair should be equal to itself
     assert_eq!(keypair1.public_key(), keypair1.public_key());
 }
-
-
-
-

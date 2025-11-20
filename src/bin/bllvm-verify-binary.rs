@@ -5,10 +5,10 @@
 //! This tool verifies that binaries and verification bundles are signed by
 //! authorized maintainers and match their cryptographic hashes.
 
-use clap::{Parser, Subcommand};
-use bllvm_sdk::governance::{GovernanceMessage, Multisig, Signature, PublicKey};
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use bllvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
+use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use bllvm_sdk::governance::{GovernanceMessage, Multisig, PublicKey, Signature};
+use clap::{Parser, Subcommand};
 use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::Path;
@@ -145,11 +145,8 @@ fn verify_target(args: &Args) -> Result<VerificationResult, Box<dyn std::error::
             hasher.update(&binary_data);
             let hash = hex::encode(hasher.finalize());
 
-            let mut message_parts = vec![
-                "binary".to_string(),
-                binary_type.to_string(),
-                hash.clone(),
-            ];
+            let mut message_parts =
+                vec!["binary".to_string(), binary_type.to_string(), hash.clone()];
             if let Some(v) = version {
                 message_parts.push(v.to_string());
             }
@@ -260,7 +257,9 @@ fn verify_target(args: &Args) -> Result<VerificationResult, Box<dyn std::error::
     })
 }
 
-fn load_signatures(signature_files: &[String]) -> Result<Vec<Signature>, Box<dyn std::error::Error>> {
+fn load_signatures(
+    signature_files: &[String],
+) -> Result<Vec<Signature>, Box<dyn std::error::Error>> {
     let mut signatures = Vec::new();
 
     for file_path in signature_files {
@@ -321,13 +320,18 @@ fn format_verification_output(
             "threshold_met": result.threshold_met,
             "errors": result.errors,
         });
-        formatter.format(&output_data).unwrap_or_else(|_| "{}".to_string())
+        formatter
+            .format(&output_data)
+            .unwrap_or_else(|_| "{}".to_string())
     } else {
         let mut output = "Verification Results\n".to_string();
         output.push_str(&format!("File: {}\n", result.file_path));
         output.push_str(&format!("Hash: {}\n", result.file_hash));
         output.push_str(&format!("Valid signatures: {}\n", result.valid_signatures));
-        output.push_str(&format!("Invalid signatures: {}\n", result.invalid_signatures));
+        output.push_str(&format!(
+            "Invalid signatures: {}\n",
+            result.invalid_signatures
+        ));
         output.push_str(&format!("Threshold met: {}\n", result.threshold_met));
         if !result.errors.is_empty() {
             output.push_str("\nErrors:\n");
@@ -343,4 +347,3 @@ fn format_verification_output(
         output
     }
 }
-

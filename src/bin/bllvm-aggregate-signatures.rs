@@ -5,9 +5,9 @@
 //! This tool collects signatures from multiple maintainers and creates a
 //! single signature file that can be verified against a multisig threshold.
 
-use clap::Parser;
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use bllvm_sdk::cli::input::parse_comma_separated;
+use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use clap::Parser;
 use serde_json::Value;
 use std::fs;
 use std::path::Path;
@@ -110,7 +110,9 @@ fn aggregate_signatures(args: &Args) -> Result<AggregationResult, Box<dyn std::e
     let threshold_met = if let Some(threshold_str) = &args.threshold {
         let parts: Vec<&str> = threshold_str.split("-of-").collect();
         if parts.len() == 2 {
-            if let (Ok(required), Ok(_total)) = (parts[0].parse::<usize>(), parts[1].parse::<usize>()) {
+            if let (Ok(required), Ok(_total)) =
+                (parts[0].parse::<usize>(), parts[1].parse::<usize>())
+            {
                 signatures.len() >= required
             } else {
                 false
@@ -156,4 +158,3 @@ fn format_aggregation_output(
         )
     }
 }
-

@@ -2,10 +2,10 @@
 //!
 //! TOML-based declarative configuration format for node composition.
 
+use crate::composition::types::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use crate::composition::types::*;
 
 /// Node configuration from TOML file
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -61,52 +61,55 @@ fn default_true() -> bool {
 impl NodeConfig {
     /// Load configuration from TOML file
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Self> {
-        let contents = std::fs::read_to_string(path.as_ref())
-            .map_err(CompositionError::IoError)?;
-        
-        let config: NodeConfig = toml::from_str(&contents)
-            .map_err(|e| CompositionError::InvalidConfiguration(
-                format!("Failed to parse TOML: {}", e)
-            ))?;
-        
+        let contents = std::fs::read_to_string(path.as_ref()).map_err(CompositionError::IoError)?;
+
+        let config: NodeConfig = toml::from_str(&contents).map_err(|e| {
+            CompositionError::InvalidConfiguration(format!("Failed to parse TOML: {}", e))
+        })?;
+
         Ok(config)
     }
-    
+
     /// Save configuration to TOML file
     pub fn to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        let toml_string = toml::to_string_pretty(self)
-            .map_err(|e| CompositionError::SerializationError(
-                format!("Failed to serialize config: {}", e)
-            ))?;
-        
-        std::fs::write(path.as_ref(), toml_string)
-            .map_err(CompositionError::IoError)?;
-        
+        let toml_string = toml::to_string_pretty(self).map_err(|e| {
+            CompositionError::SerializationError(format!("Failed to serialize config: {}", e))
+        })?;
+
+        std::fs::write(path.as_ref(), toml_string).map_err(CompositionError::IoError)?;
+
         Ok(())
     }
-    
+
     /// Convert to NodeSpec
     pub fn to_spec(&self) -> Result<NodeSpec> {
         let network = match self.node.network.as_str() {
             "mainnet" => NetworkType::Mainnet,
             "testnet" => NetworkType::Testnet,
             "regtest" => NetworkType::Regtest,
-            _ => return Err(CompositionError::InvalidConfiguration(
-                format!("Unknown network type: {}", self.node.network)
-            )),
+            _ => {
+                return Err(CompositionError::InvalidConfiguration(format!(
+                    "Unknown network type: {}",
+                    self.node.network
+                )))
+            }
         };
-        
-        let modules: Result<Vec<ModuleSpec>> = self.modules.iter()
+
+        let modules: Result<Vec<ModuleSpec>> = self
+            .modules
+            .iter()
             .filter(|(_, cfg)| cfg.enabled)
             .map(|(name, cfg)| {
                 // Convert toml::Value to serde_json::Value
-                let config: HashMap<String, serde_json::Value> = cfg.config.iter()
+                let config: HashMap<String, serde_json::Value> = cfg
+                    .config
+                    .iter()
                     .map(|(k, v)| {
                         let json_value = toml_to_json_value(v);
                         (k.clone(), json_value)
                     })
                     .collect();
-                
+
                 Ok(ModuleSpec {
                     name: name.clone(),
                     version: cfg.version.clone(),
@@ -115,7 +118,7 @@ impl NodeConfig {
                 })
             })
             .collect();
-        
+
         Ok(NodeSpec {
             name: self.node.name.clone(),
             version: self.node.version.clone(),
@@ -123,24 +126,30 @@ impl NodeConfig {
             modules: modules?,
         })
     }
-    
+
     /// Generate template configuration
     pub fn template() -> Self {
         let mut modules = HashMap::new();
-        
+
         // Add example modules
-        modules.insert("lightning".to_string(), ModuleConfig {
-            enabled: false,
-            version: Some("0.1.0".to_string()),
-            config: HashMap::new(),
-        });
-        
-        modules.insert("privacy".to_string(), ModuleConfig {
-            enabled: false,
-            version: Some("0.2.0".to_string()),
-            config: HashMap::new(),
-        });
-        
+        modules.insert(
+            "lightning".to_string(),
+            ModuleConfig {
+                enabled: false,
+                version: Some("0.1.0".to_string()),
+                config: HashMap::new(),
+            },
+        );
+
+        modules.insert(
+            "privacy".to_string(),
+            ModuleConfig {
+                enabled: false,
+                version: Some("0.2.0".to_string()),
+                config: HashMap::new(),
+            },
+        );
+
         Self {
             node: NodeMetadata {
                 name: "my-custom-node".to_string(),
@@ -157,22 +166,20 @@ fn toml_to_json_value(value: &toml::Value) -> serde_json::Value {
     match value {
         toml::Value::String(s) => serde_json::Value::String(s.clone()),
         toml::Value::Integer(i) => serde_json::Value::Number((*i).into()),
-        toml::Value::Float(f) => {
-            serde_json::Value::Number(
-                serde_json::Number::from_f64(*f).unwrap_or_else(|| serde_json::Number::from(0))
-            )
-        }
+        toml::Value::Float(f) => serde_json::Value::Number(
+            serde_json::Number::from_f64(*f).unwrap_or_else(|| serde_json::Number::from(0)),
+        ),
         toml::Value::Boolean(b) => serde_json::Value::Bool(*b),
         toml::Value::Datetime(dt) => serde_json::Value::String(dt.to_string()),
         toml::Value::Array(arr) => {
             serde_json::Value::Array(arr.iter().map(toml_to_json_value).collect())
         }
         toml::Value::Table(table) => {
-            let map: serde_json::Map<String, serde_json::Value> = table.iter()
+            let map: serde_json::Map<String, serde_json::Value> = table
+                .iter()
                 .map(|(k, v)| (k.clone(), toml_to_json_value(v)))
                 .collect();
             serde_json::Value::Object(map)
         }
     }
 }
-

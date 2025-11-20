@@ -4,9 +4,7 @@
 
 use bllvm_sdk::cli::input::{parse_base64, parse_comma_separated, parse_hex, parse_threshold};
 use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
-use bllvm_sdk::governance::{
-    GovernanceKeypair, GovernanceMessage, Multisig, PublicKey, Signature,
-};
+use bllvm_sdk::governance::{GovernanceKeypair, GovernanceMessage, Multisig, PublicKey, Signature};
 use bllvm_sdk::{sign_message, verify_signature};
 
 #[test]

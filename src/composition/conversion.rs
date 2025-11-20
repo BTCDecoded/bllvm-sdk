@@ -2,11 +2,11 @@
 //!
 //! Conversions between bllvm-sdk composition types and bllvm-node module types.
 
-use std::collections::HashMap;
 use crate::composition::types::ModuleInfo;
 use bllvm_node::module::registry::DiscoveredModule as RefDiscoveredModule;
-use bllvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
 use bllvm_node::module::traits::ModuleError as RefModuleError;
+use bllvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
+use std::collections::HashMap;
 
 impl From<&RefDiscoveredModule> for ModuleInfo {
     fn from(discovered: &RefDiscoveredModule) -> Self {
@@ -84,49 +84,55 @@ impl From<RefModuleError> for crate::composition::types::CompositionError {
                 crate::composition::types::CompositionError::DependencyResolutionFailed(msg)
             }
             RefModuleError::PermissionDenied(msg) => {
-                crate::composition::types::CompositionError::InstallationFailed(
-                    format!("Permission denied: {}", msg)
-                )
+                crate::composition::types::CompositionError::InstallationFailed(format!(
+                    "Permission denied: {}",
+                    msg
+                ))
             }
             RefModuleError::IpcError(msg) => {
-                crate::composition::types::CompositionError::InstallationFailed(
-                    format!("IPC error: {}", msg)
-                )
+                crate::composition::types::CompositionError::InstallationFailed(format!(
+                    "IPC error: {}",
+                    msg
+                ))
             }
             RefModuleError::InitializationError(msg) => {
-                crate::composition::types::CompositionError::InstallationFailed(
-                    format!("Initialization error: {}", msg)
-                )
+                crate::composition::types::CompositionError::InstallationFailed(format!(
+                    "Initialization error: {}",
+                    msg
+                ))
             }
             RefModuleError::VersionIncompatible(msg) => {
-                crate::composition::types::CompositionError::InstallationFailed(
-                    format!("Version incompatible: {}", msg)
-                )
+                crate::composition::types::CompositionError::InstallationFailed(format!(
+                    "Version incompatible: {}",
+                    msg
+                ))
             }
             RefModuleError::ModuleCrashed(msg) => {
-                crate::composition::types::CompositionError::InstallationFailed(
-                    format!("Module crashed: {}", msg)
-                )
+                crate::composition::types::CompositionError::InstallationFailed(format!(
+                    "Module crashed: {}",
+                    msg
+                ))
             }
             RefModuleError::SerializationError(msg) => {
                 crate::composition::types::CompositionError::SerializationError(msg)
             }
             RefModuleError::RateLimitExceeded(msg) => {
-                crate::composition::types::CompositionError::InstallationFailed(
-                    format!("Rate limit exceeded: {}", msg)
-                )
+                crate::composition::types::CompositionError::InstallationFailed(format!(
+                    "Rate limit exceeded: {}",
+                    msg
+                ))
             }
             RefModuleError::Timeout => {
                 crate::composition::types::CompositionError::InstallationFailed(
-                    "Timeout waiting for module response".to_string()
+                    "Timeout waiting for module response".to_string(),
                 )
             }
             RefModuleError::ResourceLimitExceeded(msg) => {
-                crate::composition::types::CompositionError::InstallationFailed(
-                    format!("Resource limit exceeded: {}", msg)
-                )
+                crate::composition::types::CompositionError::InstallationFailed(format!(
+                    "Resource limit exceeded: {}",
+                    msg
+                ))
             }
         }
     }
 }
-

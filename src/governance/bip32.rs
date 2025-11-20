@@ -7,10 +7,10 @@
 //! Key derivation path format: m/purpose'/coin_type'/account'/change/address_index
 //! Example: m/44'/0'/0'/0/0 (BIP44 standard path for Bitcoin mainnet first address)
 
-use hmac::{Hmac, Mac};
-use sha2::Sha512;
-use secp256k1::{Secp256k1, SecretKey, PublicKey, Scalar};
 use crate::governance::error::{GovernanceError, GovernanceResult};
+use hmac::{Hmac, Mac};
+use secp256k1::{PublicKey, Scalar, Secp256k1, SecretKey};
+use sha2::Sha512;
 
 type HmacSha512 = Hmac<Sha512>;
 
@@ -52,7 +52,7 @@ pub struct ExtendedPublicKey {
 pub fn derive_master_key(seed: &[u8]) -> GovernanceResult<(ExtendedPrivateKey, ExtendedPublicKey)> {
     if seed.len() < 16 || seed.len() > 64 {
         return Err(GovernanceError::InvalidInput(
-            "Seed must be 16-64 bytes".to_string()
+            "Seed must be 16-64 bytes".to_string(),
         ));
     }
 
@@ -65,7 +65,7 @@ pub fn derive_master_key(seed: &[u8]) -> GovernanceResult<(ExtendedPrivateKey, E
     // Split into private key (IL) and chain code (IR)
     let mut private_key_bytes = [0u8; 32];
     private_key_bytes.copy_from_slice(&bytes[..32]);
-    
+
     let mut chain_code = [0u8; 32];
     chain_code.copy_from_slice(&bytes[32..]);
 
@@ -73,7 +73,7 @@ pub fn derive_master_key(seed: &[u8]) -> GovernanceResult<(ExtendedPrivateKey, E
     let secp = Secp256k1::new();
     let private_key = SecretKey::from_slice(&private_key_bytes)
         .map_err(|e| GovernanceError::InvalidKey(format!("Invalid master private key: {}", e)))?;
-    
+
     let public_key = private_key.public_key(&secp);
 
     let xprv = ExtendedPrivateKey {
@@ -108,7 +108,7 @@ pub fn derive_child_private(
 
     // Prepare data for HMAC
     let mut data = Vec::with_capacity(37);
-    
+
     if is_hardened {
         // Hardened: 0x00 || parent_private_key || child_number (4 bytes, big-endian)
         data.push(0x00);
@@ -118,7 +118,7 @@ pub fn derive_child_private(
         let parent_pubkey = parent.private_key.public_key(&secp);
         data.extend_from_slice(&parent_pubkey.serialize());
     }
-    
+
     data.extend_from_slice(&child_number.to_be_bytes());
 
     // Calculate parent fingerprint (first 4 bytes of RIPEMD160(SHA256(parent_pubkey)))
@@ -136,7 +136,7 @@ pub fn derive_child_private(
     //                IR (right 32 bytes) = child chain code
     let mut il = [0u8; 32];
     il.copy_from_slice(&bytes[..32]);
-    
+
     let mut child_chain_code = [0u8; 32];
     child_chain_code.copy_from_slice(&bytes[32..]);
 
@@ -146,11 +146,12 @@ pub fn derive_child_private(
     // Convert IL to Scalar (this handles modulo curve order automatically)
     let il_scalar = Scalar::from_be_bytes(il)
         .map_err(|_| GovernanceError::InvalidKey("IL cannot be converted to scalar".to_string()))?;
-    
+
     // Add IL scalar to parent private key using add_tweak
-    let child_private = parent.private_key.add_tweak(&il_scalar)
-        .map_err(|_| GovernanceError::InvalidKey("Key addition resulted in zero or invalid key".to_string()))?;
-    
+    let child_private = parent.private_key.add_tweak(&il_scalar).map_err(|_| {
+        GovernanceError::InvalidKey("Key addition resulted in zero or invalid key".to_string())
+    })?;
+
     let child_public = child_private.public_key(&secp);
 
     let child_xprv = ExtendedPrivateKey {
@@ -181,7 +182,7 @@ pub fn derive_child_public(
 ) -> GovernanceResult<ExtendedPublicKey> {
     if child_number >= 0x80000000 {
         return Err(GovernanceError::InvalidInput(
-            "Hardened derivation requires private key".to_string()
+            "Hardened derivation requires private key".to_string(),
         ));
     }
 
@@ -192,7 +193,7 @@ pub fn derive_child_public(
 
     // Calculate parent fingerprint
     let parent_fingerprint = calculate_fingerprint(&parent.public_key.serialize());
-    
+
     // HMAC-SHA512(chain_code, data)
     let mut hmac = HmacSha512::new_from_slice(&parent.chain_code)
         .map_err(|e| GovernanceError::InvalidInput(format!("HMAC error: {}", e)))?;
@@ -203,7 +204,7 @@ pub fn derive_child_public(
     // Split result
     let mut il = [0u8; 32];
     il.copy_from_slice(&bytes[..32]);
-    
+
     let mut child_chain_code = [0u8; 32];
     child_chain_code.copy_from_slice(&bytes[32..]);
 
@@ -212,15 +213,17 @@ pub fn derive_child_public(
     // Convert IL to scalar
     let il_scalar = Scalar::from_be_bytes(il)
         .map_err(|_| GovernanceError::InvalidKey("Invalid scalar".to_string()))?;
-    
+
     // Add il_scalar * G to parent public key using add_exp_tweak
     // This computes: parent_pubkey + (il_scalar * G)
     let secp = Secp256k1::new();
-    let child_public = parent.public_key.add_exp_tweak(&secp, &il_scalar)
+    let child_public = parent
+        .public_key
+        .add_exp_tweak(&secp, &il_scalar)
         .map_err(|_| GovernanceError::InvalidKey("Point addition failed".to_string()))?;
-    
+
     let parent_fingerprint = calculate_fingerprint(&parent.public_key.serialize());
-    
+
     Ok(ExtendedPublicKey {
         depth: parent.depth + 1,
         parent_fingerprint,
@@ -232,19 +235,19 @@ pub fn derive_child_public(
 
 /// Calculate key fingerprint (first 4 bytes of RIPEMD160(SHA256(pubkey)))
 fn calculate_fingerprint(pubkey: &[u8]) -> [u8; 4] {
-    use sha2::{Sha256, Digest};
-    use ripemd::{Ripemd160, Digest as RipemdDigest};
-    
+    use ripemd::{Digest as RipemdDigest, Ripemd160};
+    use sha2::{Digest, Sha256};
+
     // SHA256(pubkey)
     let mut sha256 = Sha256::new();
     sha256.update(pubkey);
     let sha256_hash = sha256.finalize();
-    
+
     // RIPEMD160(SHA256(pubkey))
     let mut ripemd = Ripemd160::new();
     ripemd.update(&sha256_hash);
     let ripemd_hash = ripemd.finalize();
-    
+
     // First 4 bytes
     let mut fingerprint = [0u8; 4];
     fingerprint.copy_from_slice(&ripemd_hash[..4]);
@@ -265,7 +268,10 @@ impl ExtendedPrivateKey {
     }
 
     /// Derive a child key
-    pub fn derive_child(&self, child_number: u32) -> GovernanceResult<(ExtendedPrivateKey, ExtendedPublicKey)> {
+    pub fn derive_child(
+        &self,
+        child_number: u32,
+    ) -> GovernanceResult<(ExtendedPrivateKey, ExtendedPublicKey)> {
         derive_child_private(self, child_number)
     }
 
@@ -296,7 +302,7 @@ mod tests {
         // Test with a known seed
         let seed = b"Hello, Bitcoin Commons!";
         let (xprv, xpub) = derive_master_key(seed).unwrap();
-        
+
         assert_eq!(xprv.depth, 0);
         assert_eq!(xpub.depth, 0);
         assert_eq!(xprv.child_number, 0);
@@ -307,30 +313,32 @@ mod tests {
     fn test_child_derivation() {
         let seed = b"test seed for BIP32";
         let (master_xprv, master_xpub) = derive_master_key(seed).unwrap();
-        
+
         // Derive first child
         let (child_xprv, child_xpub) = master_xprv.derive_child(0).unwrap();
-        
+
         assert_eq!(child_xprv.depth, 1);
         assert_eq!(child_xpub.depth, 1);
         assert_eq!(child_xprv.child_number, 0);
-        
+
         // Verify public key matches
         let derived_xpub = child_xprv.to_extended_public();
-        assert_eq!(derived_xpub.public_key_bytes(), child_xpub.public_key_bytes());
+        assert_eq!(
+            derived_xpub.public_key_bytes(),
+            child_xpub.public_key_bytes()
+        );
     }
 
     #[test]
     fn test_hardened_derivation() {
         let seed = b"test seed for hardened derivation";
         let (master_xprv, _) = derive_master_key(seed).unwrap();
-        
+
         // Hardened child (0x80000000 = 2147483648)
         let hardened_index = 0x80000000;
         let (hardened_xprv, _) = master_xprv.derive_child(hardened_index).unwrap();
-        
+
         assert_eq!(hardened_xprv.child_number, hardened_index);
         assert!(hardened_xprv.child_number >= 0x80000000);
     }
 }
-

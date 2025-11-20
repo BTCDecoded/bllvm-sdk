@@ -57,8 +57,8 @@
 //! ```
 
 pub mod cli;
-pub mod governance;
 pub mod composition;
+pub mod governance;
 
 // Re-export main types for convenience
 pub use governance::{
@@ -71,7 +71,6 @@ pub use governance::signatures::{sign_message, verify_signature};
 
 // Re-export composition framework
 pub use composition::{
-    ModuleRegistry, ModuleLifecycle, NodeComposer, NodeConfig,
-    ModuleInfo, ModuleSource, ModuleStatus, ModuleHealth,
-    NodeSpec, ModuleSpec, ComposedNode, NetworkType,
+    ComposedNode, ModuleHealth, ModuleInfo, ModuleLifecycle, ModuleRegistry, ModuleSource,
+    ModuleSpec, ModuleStatus, NetworkType, NodeComposer, NodeConfig, NodeSpec,
 };

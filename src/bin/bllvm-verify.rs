@@ -2,10 +2,10 @@
 //!
 //! Verify governance signatures and multisig thresholds.
 
-use clap::{Parser, Subcommand};
-use bllvm_sdk::governance::{GovernanceMessage, Multisig, Signature, PublicKey};
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use bllvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
+use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use bllvm_sdk::governance::{GovernanceMessage, Multisig, PublicKey, Signature};
+use clap::{Parser, Subcommand};
 use std::fs;
 use std::path::Path;
 
@@ -88,24 +88,18 @@ fn main() {
 fn verify_message(args: &Args) -> Result<VerificationResult, Box<dyn std::error::Error>> {
     // Create the message
     let message = match &args.message {
-        MessageCommand::Release { version, commit } => {
-            GovernanceMessage::Release {
-                version: version.clone(),
-                commit_hash: commit.clone(),
-            }
-        }
-        MessageCommand::Module { name, version } => {
-            GovernanceMessage::ModuleApproval {
-                module_name: name.clone(),
-                version: version.clone(),
-            }
-        }
-        MessageCommand::Budget { amount, purpose } => {
-            GovernanceMessage::BudgetDecision {
-                amount: *amount,
-                purpose: purpose.clone(),
-            }
-        }
+        MessageCommand::Release { version, commit } => GovernanceMessage::Release {
+            version: version.clone(),
+            commit_hash: commit.clone(),
+        },
+        MessageCommand::Module { name, version } => GovernanceMessage::ModuleApproval {
+            module_name: name.clone(),
+            version: version.clone(),
+        },
+        MessageCommand::Budget { amount, purpose } => GovernanceMessage::BudgetDecision {
+            amount: *amount,
+            purpose: purpose.clone(),
+        },
     };
 
     // Load signatures
@@ -144,9 +138,11 @@ fn verify_message(args: &Args) -> Result<VerificationResult, Box<dyn std::error:
     let threshold_met = if let Some(threshold_str) = &args.threshold {
         let (threshold, total) = parse_threshold(threshold_str)?;
         if public_keys.len() != total {
-            return Err(format!("Expected {} public keys, got {}", total, public_keys.len()).into());
+            return Err(
+                format!("Expected {} public keys, got {}", total, public_keys.len()).into(),
+            );
         }
-        
+
         let multisig = Multisig::new(threshold, total, public_keys)?;
         multisig.verify(&message_bytes, &signatures)?
     } else {
@@ -169,9 +165,11 @@ struct VerificationResult {
     threshold_met: bool,
 }
 
-fn load_signatures(signature_files: &[String]) -> Result<Vec<Signature>, Box<dyn std::error::Error>> {
+fn load_signatures(
+    signature_files: &[String],
+) -> Result<Vec<Signature>, Box<dyn std::error::Error>> {
     let mut signatures = Vec::new();
-    
+
     for file_path in signature_files {
         if !Path::new(file_path).exists() {
             return Err(format!("Signature file not found: {}", file_path).into());
@@ -194,7 +192,7 @@ fn load_signatures(signature_files: &[String]) -> Result<Vec<Signature>, Box<dyn
 
 fn load_public_keys(pubkey_files: &[String]) -> Result<Vec<PublicKey>, Box<dyn std::error::Error>> {
     let mut public_keys = Vec::new();
-    
+
     for file_path in pubkey_files {
         if !Path::new(file_path).exists() {
             return Err(format!("Public key file not found: {}", file_path).into());
@@ -228,12 +226,17 @@ fn format_verification_output(
             "invalid_signatures": result.invalid_signatures,
             "threshold_met": result.threshold_met,
         });
-        formatter.format(&output_data).unwrap_or_else(|_| "{}".to_string())
+        formatter
+            .format(&output_data)
+            .unwrap_or_else(|_| "{}".to_string())
     } else {
         let mut output = "Verification Results\n".to_string();
         output.push_str(&format!("Message: {}\n", result.message.description()));
         output.push_str(&format!("Valid signatures: {}\n", result.valid_signatures));
-        output.push_str(&format!("Invalid signatures: {}\n", result.invalid_signatures));
+        output.push_str(&format!(
+            "Invalid signatures: {}\n",
+            result.invalid_signatures
+        ));
         output.push_str(&format!("Threshold met: {}\n", result.threshold_met));
         output
     }

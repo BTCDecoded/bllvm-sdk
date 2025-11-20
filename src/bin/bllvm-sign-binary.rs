@@ -5,10 +5,10 @@
 //! This tool signs binaries and verification bundles with maintainer multisig,
 //! creating cryptographic proof that binaries match verified code.
 
-use clap::{Parser, Subcommand};
 use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use bllvm_sdk::governance::{GovernanceKeypair, Signature};
 use bllvm_sdk::sign_message as crypto_sign_message;
+use clap::{Parser, Subcommand};
 use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::Path;
@@ -119,7 +119,13 @@ fn sign_target(args: &Args) -> Result<SignResult, Box<dyn std::error::Error>> {
             binary_type,
             version,
             commit,
-        } => sign_binary(&keypair, file, binary_type, version.as_deref(), commit.as_deref()),
+        } => sign_binary(
+            &keypair,
+            file,
+            binary_type,
+            version.as_deref(),
+            commit.as_deref(),
+        ),
         SignTarget::Bundle {
             file,
             source_hash,
@@ -356,7 +362,11 @@ fn format_signature_output(
              Hash: {}\n\
              Signature: {}\n\
              Saved to: {}\n",
-            result.metadata.get("type").and_then(|t| t.as_str()).unwrap_or("file"),
+            result
+                .metadata
+                .get("type")
+                .and_then(|t| t.as_str())
+                .unwrap_or("file"),
             result.file_path,
             result.file_hash,
             result.signature,
@@ -364,4 +374,3 @@ fn format_signature_output(
         )
     }
 }
-

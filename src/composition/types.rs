@@ -166,28 +166,27 @@ pub struct ValidationResult {
 pub enum CompositionError {
     #[error("Module not found: {0}")]
     ModuleNotFound(String),
-    
+
     #[error("Module version not found: {0} {1}")]
     ModuleVersionNotFound(String, String),
-    
+
     #[error("Dependency resolution failed: {0}")]
     DependencyResolutionFailed(String),
-    
+
     #[error("Module installation failed: {0}")]
     InstallationFailed(String),
-    
+
     #[error("Invalid configuration: {0}")]
     InvalidConfiguration(String),
-    
+
     #[error("Composition validation failed: {0}")]
     ValidationFailed(String),
-    
+
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),
-    
+
     #[error("Serialization error: {0}")]
     SerializationError(String),
 }
 
 pub type Result<T> = std::result::Result<T, CompositionError>;
-

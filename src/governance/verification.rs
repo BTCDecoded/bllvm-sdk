@@ -20,15 +20,15 @@ pub fn verify_signature_hash(
     message_hash: &[u8],
     public_key: &PublicKey,
 ) -> GovernanceResult<bool> {
-    use secp256k1::{Secp256k1, Message};
-    
+    use secp256k1::{Message, Secp256k1};
+
     let secp = Secp256k1::new();
-    
+
     let message = Message::from_digest_slice(message_hash)
         .map_err(|e| GovernanceError::Cryptographic(format!("Invalid message hash: {}", e)))?;
-    
+
     let result = secp.verify_ecdsa(&message, &signature.inner, &public_key.inner);
-    
+
     Ok(result.is_ok())
 }
 
@@ -39,7 +39,7 @@ pub fn verify_multiple_signatures(
     public_keys: &[PublicKey],
 ) -> GovernanceResult<Vec<bool>> {
     let mut results = Vec::new();
-    
+
     for signature in signatures {
         let mut verified = false;
         for public_key in public_keys {
@@ -50,7 +50,7 @@ pub fn verify_multiple_signatures(
         }
         results.push(verified);
     }
-    
+
     Ok(results)
 }
 
@@ -73,10 +73,10 @@ mod tests {
     fn test_verify_signature() {
         let keypair = GovernanceKeypair::generate().unwrap();
         let message = b"test message";
-        
+
         let signature = crate::sign_message(&keypair.secret_key, message).unwrap();
         let verified = verify_signature(&signature, message, &keypair.public_key()).unwrap();
-        
+
         assert!(verified);
     }
 
@@ -85,26 +85,29 @@ mod tests {
         let keypair = GovernanceKeypair::generate().unwrap();
         let message = b"test message";
         let message_hash = sha2::Sha256::digest(message);
-        
+
         let signature = crate::sign_message(&keypair.secret_key, message).unwrap();
-        let verified = verify_signature_hash(&signature, &message_hash, &keypair.public_key()).unwrap();
-        
+        let verified =
+            verify_signature_hash(&signature, &message_hash, &keypair.public_key()).unwrap();
+
         assert!(verified);
     }
 
     #[test]
     fn test_verify_multiple_signatures() {
-        let keypairs: Vec<_> = (0..3).map(|_| GovernanceKeypair::generate().unwrap()).collect();
+        let keypairs: Vec<_> = (0..3)
+            .map(|_| GovernanceKeypair::generate().unwrap())
+            .collect();
         let public_keys: Vec<_> = keypairs.iter().map(|kp| kp.public_key()).collect();
         let message = b"test message";
-        
+
         let signatures: Vec<_> = keypairs
             .iter()
             .map(|kp| crate::sign_message(&kp.secret_key, message).unwrap())
             .collect();
-        
+
         let results = verify_multiple_signatures(&signatures, message, &public_keys).unwrap();
-        
+
         assert_eq!(results.len(), 3);
         assert!(results.iter().all(|&verified| verified));
     }
@@ -114,10 +117,10 @@ mod tests {
         let keypair1 = GovernanceKeypair::generate().unwrap();
         let keypair2 = GovernanceKeypair::generate().unwrap();
         let message = b"test message";
-        
+
         let signature = crate::sign_message(&keypair1.secret_key, message).unwrap();
         let verified = verify_signature(&signature, message, &keypair2.public_key()).unwrap();
-        
+
         assert!(!verified);
     }
 }

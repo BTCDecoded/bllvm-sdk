@@ -2,9 +2,9 @@
 //!
 //! Generate governance keypairs for Bitcoin governance operations.
 
-use clap::Parser;
-use bllvm_sdk::governance::GovernanceKeypair;
 use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use bllvm_sdk::governance::GovernanceKeypair;
+use clap::Parser;
 use std::fs;
 // No need for Path import
 
@@ -53,7 +53,7 @@ fn generate_keypair(args: &Args) -> Result<GovernanceKeypair, Box<dyn std::error
         if seed_bytes.len() < 32 {
             return Err("Seed must be at least 32 bytes".into());
         }
-        
+
         let mut seed_array = [0u8; 32];
         seed_array.copy_from_slice(&seed_bytes[..32]);
         GovernanceKeypair::from_secret_key(&seed_array)?
@@ -68,7 +68,10 @@ fn generate_keypair(args: &Args) -> Result<GovernanceKeypair, Box<dyn std::error
     Ok(keypair)
 }
 
-fn save_keypair(keypair: &GovernanceKeypair, output_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+fn save_keypair(
+    keypair: &GovernanceKeypair,
+    output_path: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
     let keypair_data = serde_json::json!({
         "public_key": hex::encode(keypair.public_key().to_bytes()),
         "secret_key": hex::encode(keypair.secret_key_bytes()),
@@ -97,12 +100,17 @@ fn format_keypair_output(
             },
             "output_file": args.output,
         });
-        formatter.format(&output_data).unwrap_or_else(|_| "{}".to_string())
+        formatter
+            .format(&output_data)
+            .unwrap_or_else(|_| "{}".to_string())
     } else {
         let mut output = "Generated governance keypair\n".to_string();
         output.push_str(&format!("Public key: {}\n", keypair.public_key()));
         if args.show_private {
-            output.push_str(&format!("Secret key: {}\n", hex::encode(keypair.secret_key_bytes())));
+            output.push_str(&format!(
+                "Secret key: {}\n",
+                hex::encode(keypair.secret_key_bytes())
+            ));
         }
         output.push_str(&format!("Saved to: {}\n", args.output));
         output

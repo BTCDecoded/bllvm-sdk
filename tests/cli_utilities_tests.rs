@@ -2,8 +2,8 @@
 //!
 //! Tests for CLI input/output formatting and parsing utilities.
 
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use bllvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
+use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use std::error::Error;
 
 // ============================================================================
@@ -15,7 +15,7 @@ fn test_output_format_text() {
     // Test text output format
     let format = OutputFormat::Text;
     let formatter = OutputFormatter::new(format);
-    
+
     // Formatter should be created
     // Test by formatting something
     let result = formatter.format(&"test");
@@ -27,7 +27,7 @@ fn test_output_format_json() {
     // Test JSON output format
     let format = OutputFormat::Json;
     let formatter = OutputFormatter::new(format);
-    
+
     // Formatter should be created
     // Test by formatting something
     let result = formatter.format(&"test");
@@ -40,7 +40,7 @@ fn test_output_format_from_str() {
     let text_format: Result<OutputFormat, _> = "text".parse();
     assert!(text_format.is_ok());
     assert_eq!(text_format.unwrap(), OutputFormat::Text);
-    
+
     let json_format: Result<OutputFormat, _> = "json".parse();
     assert!(json_format.is_ok());
     assert_eq!(json_format.unwrap(), OutputFormat::Json);
@@ -61,7 +61,7 @@ fn test_output_format_invalid() {
 fn test_output_formatter_creation() {
     // Test creating output formatter
     let formatter = OutputFormatter::new(OutputFormat::Text);
-    
+
     // Should be created successfully
     // Test by formatting something
     let result = formatter.format(&"test");
@@ -74,9 +74,9 @@ fn test_output_formatter_format_error() {
     let formatter = OutputFormatter::new(OutputFormat::Text);
     let error: Box<dyn Error> = Box::new(std::io::Error::new(
         std::io::ErrorKind::NotFound,
-        "File not found"
+        "File not found",
     ));
-    
+
     let formatted = formatter.format_error(&*error);
     // Should format error (may vary by format)
     assert!(!formatted.is_empty());
@@ -88,9 +88,9 @@ fn test_output_formatter_json_error() {
     let formatter = OutputFormatter::new(OutputFormat::Json);
     let error: Box<dyn Error> = Box::new(std::io::Error::new(
         std::io::ErrorKind::NotFound,
-        "File not found"
+        "File not found",
     ));
-    
+
     let formatted = formatter.format_error(&*error);
     // JSON format should produce JSON output
     assert!(formatted.contains("error") || formatted.contains("Error"));
@@ -154,7 +154,7 @@ fn test_parse_threshold_different_formats() {
     let (threshold, total) = result.unwrap();
     assert_eq!(threshold, 3);
     assert_eq!(total, 5);
-    
+
     // Other formats should fail
     assert!(parse_threshold("3/5").is_err());
     assert!(parse_threshold("3:5").is_err());
@@ -177,7 +177,7 @@ fn test_parse_threshold_edge_cases() {
         assert_eq!(threshold, 1);
         assert_eq!(total, 1);
     }
-    
+
     // 5-of-5 (all required)
     let result = parse_threshold("5-of-5");
     if result.is_ok() {
@@ -197,7 +197,7 @@ fn test_cli_output_format_roundtrip() {
     let format = OutputFormat::Text;
     // OutputFormat doesn't implement Display, but we can test parsing
     let parsed: Result<OutputFormat, _> = "text".parse();
-    
+
     assert!(parsed.is_ok());
     assert_eq!(parsed.unwrap(), format);
 }
@@ -206,7 +206,7 @@ fn test_cli_output_format_roundtrip() {
 fn test_cli_output_format_all_variants() {
     // Test all output format variants
     let formats = vec![OutputFormat::Text, OutputFormat::Json];
-    
+
     for format in formats {
         let formatter = OutputFormatter::new(format);
         // Test by formatting something
@@ -223,7 +223,7 @@ fn test_cli_input_parsing_robustness() {
     assert_eq!(result.len(), 2); // Empty value is filtered
     assert_eq!(result[0], "value1");
     assert_eq!(result[1], "value3");
-    
+
     // Only commas (all filtered out)
     let result = parse_comma_separated(",,,");
     assert_eq!(result.len(), 0); // All empty values filtered
@@ -237,7 +237,7 @@ fn test_cli_threshold_validation() {
     assert!(result.is_ok());
     let (threshold, total) = result.unwrap();
     assert!(threshold <= total);
-    
+
     // Threshold can be 0 (parsing succeeds, validation happens elsewhere)
     let result = parse_threshold("0-of-5");
     // Parsing succeeds (validation happens at usage time)
@@ -255,15 +255,15 @@ fn test_cli_threshold_validation() {
 fn test_output_formatter_error_handling() {
     // Test formatter handles various error types
     let formatter = OutputFormatter::new(OutputFormat::Text);
-    
+
     // IO error
     let io_error: Box<dyn Error> = Box::new(std::io::Error::new(
         std::io::ErrorKind::PermissionDenied,
-        "Permission denied"
+        "Permission denied",
     ));
     let formatted = formatter.format_error(&*io_error);
     assert!(!formatted.is_empty());
-    
+
     // String error
     let string_error: Box<dyn Error> = "Test error".into();
     let formatted = formatter.format_error(&*string_error);
@@ -275,7 +275,7 @@ fn test_input_parsing_error_messages() {
     // Test that parsing errors provide useful messages
     let result = parse_threshold("invalid-format");
     assert!(result.is_err());
-    
+
     // Error should contain information
     let error_msg = format!("{}", result.unwrap_err());
     assert!(!error_msg.is_empty());
@@ -290,15 +290,15 @@ fn test_output_format_consistency() {
     // Test that same format produces consistent output
     let formatter1 = OutputFormatter::new(OutputFormat::Text);
     let formatter2 = OutputFormatter::new(OutputFormat::Text);
-    
+
     let error: Box<dyn Error> = Box::new(std::io::Error::new(
         std::io::ErrorKind::NotFound,
-        "Test error"
+        "Test error",
     ));
-    
+
     let formatted1 = formatter1.format_error(&*error);
     let formatted2 = formatter2.format_error(&*error);
-    
+
     // Should produce same output for same format
     assert_eq!(formatted1, formatted2);
 }
@@ -308,16 +308,15 @@ fn test_output_format_differences() {
     // Test that different formats produce different output
     let text_formatter = OutputFormatter::new(OutputFormat::Text);
     let json_formatter = OutputFormatter::new(OutputFormat::Json);
-    
+
     let error: Box<dyn Error> = Box::new(std::io::Error::new(
         std::io::ErrorKind::NotFound,
-        "Test error"
+        "Test error",
     ));
-    
+
     let text_output = text_formatter.format_error(&*error);
     let json_output = json_formatter.format_error(&*error);
-    
+
     // Should produce different output
     assert_ne!(text_output, json_output);
 }
-
