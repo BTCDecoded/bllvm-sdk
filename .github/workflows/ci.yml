@@ -277,6 +277,7 @@ jobs:
 
   security:
     name: Security
+    needs: setup
     runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v4
@@ -332,7 +333,7 @@ jobs:
 
   build:
     name: Build
-    needs: [setup, test, lint]
+    needs: [setup, test, lint, security]
     runs-on: [self-hosted, linux, x64]
     if: github.event_name == 'push' || github.event_name == 'release' || github.event_name == 'repository_dispatch'
     steps:
