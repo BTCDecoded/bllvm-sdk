@@ -90,6 +90,21 @@ bllvm-verify release \
   --pubkeys keys.json
 ```
 
+## Current Implementation Status
+
+### Core Features
+- ✅ **Governance Primitives** - Cryptographic key management and signature verification
+- ✅ **CLI Tools** - `bllvm-keygen`, `bllvm-sign`, `bllvm-verify`
+- ✅ **Multisig Support** - Threshold logic for collective decision making
+- ✅ **Bitcoin-Compatible** - Uses Bitcoin message signing standards
+
+### Future Features
+- ⏳ **Composition Framework** - Declarative node composition from modules
+- ⏳ **Module Registry** - Module lifecycle management
+- ⏳ **Economic Integration** - Merge mining support
+
+**Note**: Core governance primitives are complete. Composition framework is planned for future releases.
+
 ## Design Principles
 
 1. **Governance Crypto is Reusable:** Clean library API for external consumers

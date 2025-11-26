@@ -31,6 +31,9 @@ tarpaulin-report.html
 # Benchmarks
 criterion/
 
+# Local Cargo overrides (not committed - each developer sets up their own)
+.cargo/config.toml
+
 
 
 
