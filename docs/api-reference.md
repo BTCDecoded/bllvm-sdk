@@ -1,6 +1,6 @@
 # API Reference
 
-Complete API documentation for the developer-sdk governance crypto library.
+Complete API documentation for the bllvm-sdk governance crypto library.
 
 ## Core Types
 
@@ -224,7 +224,7 @@ Commands:
 ### Basic Usage
 
 ```rust
-use developer_sdk::governance::{
+use bllvm_sdk::governance::{
     GovernanceKeypair, GovernanceMessage, Multisig, sign_message, verify_signature
 };
 
@@ -248,7 +248,7 @@ assert!(verified);
 ### Multisig Usage
 
 ```rust
-use developer_sdk::governance::{
+use bllvm_sdk::governance::{
     GovernanceKeypair, GovernanceMessage, Multisig, sign_message
 };
 
@@ -279,7 +279,7 @@ assert!(verified);
 ### Error Handling
 
 ```rust
-use developer_sdk::governance::{GovernanceResult, GovernanceError};
+use bllvm_sdk::governance::{GovernanceResult, GovernanceError};
 
 fn process_governance() -> GovernanceResult<()> {
     let keypair = GovernanceKeypair::generate()?;

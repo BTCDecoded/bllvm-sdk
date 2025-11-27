@@ -13,7 +13,7 @@ The governance crypto library provides cryptographic primitives for Bitcoin gove
 The `GovernanceKeypair` struct provides key generation and management:
 
 ```rust
-use developer_sdk::governance::GovernanceKeypair;
+use bllvm_sdk::governance::GovernanceKeypair;
 
 // Generate a random keypair
 let keypair = GovernanceKeypair::generate()?;
@@ -35,7 +35,7 @@ let public_bytes = keypair.public_key().to_bytes();
 The `GovernanceMessage` enum provides standardized message formats:
 
 ```rust
-use developer_sdk::governance::GovernanceMessage;
+use bllvm_sdk::governance::GovernanceMessage;
 
 // Create a release message
 let message = GovernanceMessage::Release {
@@ -64,7 +64,7 @@ let signing_bytes = message.to_signing_bytes();
 Sign and verify messages:
 
 ```rust
-use developer_sdk::governance::{sign_message, verify_signature};
+use bllvm_sdk::governance::{sign_message, verify_signature};
 
 // Sign a message
 let signature = sign_message(&keypair.secret_key, &message.to_signing_bytes())?;
@@ -78,7 +78,7 @@ let verified = verify_signature(&signature, &message.to_signing_bytes(), &keypai
 The `Multisig` struct provides threshold signature validation:
 
 ```rust
-use developer_sdk::governance::Multisig;
+use bllvm_sdk::governance::Multisig;
 
 // Create a 3-of-5 multisig
 let keypairs: Vec<_> = (0..5).map(|_| GovernanceKeypair::generate().unwrap()).collect();
@@ -101,7 +101,7 @@ let verified = multisig.verify(&message.to_signing_bytes(), &signatures)?;
 ### For Governance-App
 
 ```rust
-use developer_sdk::governance::{
+use bllvm_sdk::governance::{
     GovernanceKeypair, GovernanceMessage, Multisig, sign_message, verify_signature
 };
 
@@ -137,7 +137,7 @@ async fn handle_release_webhook(pr: PullRequest) -> Result<(), Error> {
 ### For Reference-Node
 
 ```rust
-use developer_sdk::governance::{
+use bllvm_sdk::governance::{
     GovernanceMessage, Multisig, verify_signature
 };
 
@@ -187,7 +187,7 @@ impl GovernanceModule {
 The library uses the `GovernanceResult<T>` type for error handling:
 
 ```rust
-use developer_sdk::governance::{GovernanceResult, GovernanceError};
+use bllvm_sdk::governance::{GovernanceResult, GovernanceError};
 
 fn process_governance_message() -> GovernanceResult<()> {
     let keypair = GovernanceKeypair::generate()?;

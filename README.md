@@ -1,48 +1,52 @@
 # Bitcoin Commons Developer SDK
 
-**Governance infrastructure and composition framework for Bitcoin.**
+Governance infrastructure and composition framework for Bitcoin implementations.
 
 > **For verified system status**: See [SYSTEM_STATUS.md](https://github.com/BTCDecoded/.github/blob/main/SYSTEM_STATUS.md) in the BTCDecoded organization repository.
 
-This crate provides the **institutional layer** for Bitcoin governance, offering reusable governance primitives and a composition framework for building alternative Bitcoin implementations.
+Provides the institutional layer for Bitcoin governance, offering reusable governance primitives and a composition framework for building alternative Bitcoin implementations.
 
 ## Architecture Position
 
-This is **Tier 5** of the 6-tier Bitcoin Commons architecture (BLLVM technology stack):
+Tier 5 of the 6-tier Bitcoin Commons architecture (BLLVM technology stack):
 
 ```
 1. bllvm-spec (Orange Paper - mathematical foundation)
 2. bllvm-consensus (pure math implementation)
 3. bllvm-protocol (Bitcoin abstraction)
 4. bllvm-node (full node implementation)
-5. bllvm-sdk (composition + governance libraries) ← THIS CRATE
+5. bllvm-sdk (composition + governance libraries)
 6. bllvm-commons (governance enforcement - GitHub App)
 ```
 
 ## Core Components
 
 ### Governance Primitives
-- **Cryptographic key management** for governance operations
-- **Signature creation and verification** using Bitcoin-compatible standards
-- **Multisig threshold logic** for collective decision making
-- **Message formats** for releases, module approvals, and budget decisions
+- Cryptographic key management for governance operations
+- Signature creation and verification using Bitcoin-compatible standards
+- Multisig threshold logic for collective decision making
+- Message formats for releases, module approvals, and budget decisions
 
 ### CLI Tools
 - `bllvm-keygen` - Generate governance keypairs
 - `bllvm-sign` - Sign governance messages
 - `bllvm-verify` - Verify signatures and multisig thresholds
+- `bllvm-compose` - Declarative node composition from modules
+- `bllvm-sign-binary` - Sign binary files
+- `bllvm-verify-binary` - Verify binary file signatures
+- `bllvm-aggregate-signatures` - Aggregate multiple signatures
 
-### Composition Framework (Future)
-- **Declarative node composition** from modules
-- **Module registry** and lifecycle management
-- **Economic integration** through merge mining
+### Composition Framework
+- Declarative node composition from modules
+- Module registry and lifecycle management
+- Economic integration through merge mining
 
 ## Quick Start
 
 ### As a Library
 
 ```rust
-use developer_sdk::governance::{
+use bllvm_sdk::governance::{
     GovernanceKeypair, GovernanceMessage, Multisig
 };
 
@@ -85,20 +89,13 @@ bllvm-verify release \
   --pubkeys keys.json
 ```
 
-## Current Implementation Status
+## Features
 
-### Core Features
-- ✅ **Governance Primitives** - Cryptographic key management and signature verification
-- ✅ **CLI Tools** - `bllvm-keygen`, `bllvm-sign`, `bllvm-verify`
-- ✅ **Multisig Support** - Threshold logic for collective decision making
-- ✅ **Bitcoin-Compatible** - Uses Bitcoin message signing standards
-
-### Future Features
-- ⏳ **Composition Framework** - Declarative node composition from modules
-- ⏳ **Module Registry** - Module lifecycle management
-- ⏳ **Economic Integration** - Merge mining support
-
-**Note**: Core governance primitives are complete. Composition framework is planned for future releases.
+- **Governance Primitives**: Cryptographic key management and signature verification
+- **CLI Tools**: `bllvm-keygen`, `bllvm-sign`, `bllvm-verify`, `bllvm-compose`, `bllvm-sign-binary`, `bllvm-verify-binary`, `bllvm-aggregate-signatures`
+- **Multisig Support**: Threshold logic for collective decision making
+- **Bitcoin-Compatible**: Uses Bitcoin message signing standards
+- **Composition Framework**: Declarative node composition from modules
 
 ## Design Principles
 
