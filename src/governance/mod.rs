@@ -15,6 +15,7 @@ pub mod error;
 pub mod keys;
 pub mod messages;
 pub mod multisig;
+pub mod nested_multisig;
 pub mod psbt;
 pub mod signatures;
 pub mod verification;
