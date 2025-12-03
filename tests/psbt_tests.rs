@@ -3,7 +3,7 @@
 //! Tests for BIP174 PSBT format implementation.
 //! Specification: https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki
 
-use bllvm_sdk::governance::psbt::{
+use blvm_sdk::governance::psbt::{
     Bip32Derivation, PartialSignature, PartiallySignedTransaction, PsbtGlobalKey, PsbtInputKey,
     PsbtOutputKey, SighashType, PSBT_MAGIC, PSBT_SEPARATOR,
 };

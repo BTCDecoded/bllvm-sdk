@@ -1,13 +1,13 @@
 [package]
-name = "bllvm-sdk"
+name = "blvm-sdk"
 version = "0.1.0"
 edition = "2021"
 authors = ["Bitcoin Commons Contributors"]
 description = "Bitcoin Commons software developer kit, governance infrastructure and composition framework for Bitcoin"
 license = "MIT"
-repository = "https://github.com/BTCDecoded/bllvm-sdk"
-homepage = "https://github.com/BTCDecoded/bllvm-sdk"
-documentation = "https://docs.rs/bllvm-sdk"
+repository = "https://github.com/BTCDecoded/blvm-sdk"
+homepage = "https://github.com/BTCDecoded/blvm-sdk"
+documentation = "https://docs.rs/blvm-sdk"
 keywords = ["bitcoin", "governance", "cryptography", "consensus"]
 categories = ["cryptography", "development-tools"]
 
@@ -42,18 +42,15 @@ clap = { version = "=4.4.11", features = ["derive"] }
 
 # Composition framework dependencies
 toml = "=0.8.2"
-bllvm-node = { path = "../blvm-node", package = "bllvm-node" }
+blvm-node = "0.1.0"
 tokio = { version = "=1.48.0", features = ["rt", "macros", "sync"] }
 
-# Local development: Use local path dependencies instead of crates.io versions
-# Local development: Use .cargo/config.toml to override dependencies with local paths
-# This allows you to develop against local changes without publishing
-# For CI jobs that checkout dependencies, .cargo/config.toml is created automatically
-
+# Local development: Use [patch.crates-io] to override with local paths
+# For production/CI, these patches are removed and crates.io versions are used
 [patch.crates-io]
-# Use local bllvm-protocol instead of published version
-bllvm-protocol = { path = "../blvm-protocol" }
-bllvm-consensus = { path = "../blvm-consensus" }
+blvm-node = { path = "../blvm-node" }
+blvm-protocol = { path = "../blvm-protocol" }
+blvm-consensus = { path = "../blvm-consensus" }
 
 [dev-dependencies]
 # Testing
@@ -61,29 +58,29 @@ criterion = "=0.5.1"  # Benchmarking
 tempfile = "=3.8.1"  # Temporary files for tests
 
 [[bin]]
-name = "bllvm-keygen"
-path = "src/bin/bllvm-keygen.rs"
+name = "blvm-keygen"
+path = "src/bin/blvm-keygen.rs"
 
 [[bin]]
-name = "bllvm-sign"
-path = "src/bin/bllvm-sign.rs"
+name = "blvm-sign"
+path = "src/bin/blvm-sign.rs"
 
 [[bin]]
-name = "bllvm-verify"
-path = "src/bin/bllvm-verify.rs"
+name = "blvm-verify"
+path = "src/bin/blvm-verify.rs"
 
 [[bin]]
-name = "bllvm-compose"
-path = "src/bin/bllvm-compose.rs"
+name = "blvm-compose"
+path = "src/bin/blvm-compose.rs"
 
 [[bin]]
-name = "bllvm-sign-binary"
-path = "src/bin/bllvm-sign-binary.rs"
+name = "blvm-sign-binary"
+path = "src/bin/blvm-sign-binary.rs"
 
 [[bin]]
-name = "bllvm-verify-binary"
-path = "src/bin/bllvm-verify-binary.rs"
+name = "blvm-verify-binary"
+path = "src/bin/blvm-verify-binary.rs"
 
 [[bin]]
-name = "bllvm-aggregate-signatures"
-path = "src/bin/bllvm-aggregate-signatures.rs"
+name = "blvm-aggregate-signatures"
+path = "src/bin/blvm-aggregate-signatures.rs"

@@ -5,9 +5,9 @@
 //! This tool signs binaries and verification bundles with maintainer multisig,
 //! creating cryptographic proof that binaries match verified code.
 
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
-use bllvm_sdk::governance::{GovernanceKeypair, Signature};
-use bllvm_sdk::sign_message as crypto_sign_message;
+use blvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use blvm_sdk::governance::{GovernanceKeypair, Signature};
+use blvm_sdk::sign_message as crypto_sign_message;
 use clap::{Parser, Subcommand};
 use sha2::{Digest, Sha256};
 use std::fs;
@@ -15,7 +15,7 @@ use std::path::Path;
 
 /// Sign binaries and verification bundles
 #[derive(Parser, Debug)]
-#[command(name = "bllvm-sign-binary")]
+#[command(name = "blvm-sign-binary")]
 #[command(about = "Sign binaries and verification bundles for Bitcoin Commons releases")]
 struct Args {
     /// Output file for the signature

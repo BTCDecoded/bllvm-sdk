@@ -5,11 +5,11 @@
 
 use crate::composition::conversion::*;
 use crate::composition::types::*;
-use bllvm_node::module::registry::{
+use blvm_node::module::registry::{
     DiscoveredModule as RefDiscoveredModule, ModuleDependencies as RefModuleDependencies,
     ModuleDiscovery as RefModuleDiscovery, ModuleManifest as RefModuleManifest,
 };
-use bllvm_node::module::traits::ModuleError as RefModuleError;
+use blvm_node::module::traits::ModuleError as RefModuleError;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 

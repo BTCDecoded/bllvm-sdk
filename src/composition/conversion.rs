@@ -1,11 +1,11 @@
 //! Type Conversions
 //!
-//! Conversions between bllvm-sdk composition types and bllvm-node module types.
+//! Conversions between blvm-sdk composition types and blvm-node module types.
 
 use crate::composition::types::ModuleInfo;
-use bllvm_node::module::registry::DiscoveredModule as RefDiscoveredModule;
-use bllvm_node::module::traits::ModuleError as RefModuleError;
-use bllvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
+use blvm_node::module::registry::DiscoveredModule as RefDiscoveredModule;
+use blvm_node::module::traits::ModuleError as RefModuleError;
+use blvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
 use std::collections::HashMap;
 
 impl From<&RefDiscoveredModule> for ModuleInfo {
@@ -63,6 +63,7 @@ impl From<ModuleInfo> for RefModuleMetadata {
             author: info.author.unwrap_or_default(),
             capabilities: info.capabilities,
             dependencies: info.dependencies,
+            optional_dependencies: HashMap::new(), // ModuleInfo doesn't track optional deps separately
             entry_point: info.entry_point,
         }
     }

@@ -54,7 +54,9 @@ impl NestedMultisig {
             if team.maintainers.len() < maintainers_per_team_required {
                 return Err(GovernanceError::InvalidMultisig(format!(
                     "Team {} has {} maintainers, but {} required",
-                    team.id, team.maintainers.len(), maintainers_per_team_required
+                    team.id,
+                    team.maintainers.len(),
+                    maintainers_per_team_required
                 )));
             }
         }
@@ -67,7 +69,7 @@ impl NestedMultisig {
     }
 
     /// Verify nested multisig signatures
-    /// 
+    ///
     /// Process:
     /// 1. Group signatures by team
     /// 2. Count team approvals (maintainers_per_team_required per team)
@@ -97,14 +99,19 @@ impl NestedMultisig {
 
         for team in &self.teams {
             let team_sigs = team_signatures.get(&team.id).map(|v| v.len()).unwrap_or(0);
-            
+
             // Verify signatures for this team
             let mut valid_sigs = 0;
             if let Some(sigs) = team_signatures.get(&team.id) {
                 for (github, sig) in sigs {
                     // Find maintainer's public key
-                    if let Some(maintainer) = team.maintainers.iter().find(|m| m.github == *github) {
-                        if crate::governance::verify_signature(sig, message, &maintainer.public_key)? {
+                    if let Some(maintainer) = team.maintainers.iter().find(|m| m.github == *github)
+                    {
+                        if crate::governance::verify_signature(
+                            sig,
+                            message,
+                            &maintainer.public_key,
+                        )? {
                             valid_sigs += 1;
                         }
                     }
@@ -170,4 +177,3 @@ pub struct TeamApprovalStatus {
     pub maintainers_required: usize,
     pub approved: bool,
 }
-

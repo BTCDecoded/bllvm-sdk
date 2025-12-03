@@ -2,16 +2,16 @@
 //!
 //! Sign governance messages for Bitcoin Commons governance operations.
 
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
-use bllvm_sdk::governance::{GovernanceKeypair, GovernanceMessage, Signature};
-use bllvm_sdk::sign_message as crypto_sign_message;
+use blvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use blvm_sdk::governance::{GovernanceKeypair, GovernanceMessage, Signature};
+use blvm_sdk::sign_message as crypto_sign_message;
 use clap::{Parser, Subcommand};
 use std::fs;
 use std::path::Path;
 
 /// Sign governance messages
 #[derive(Parser, Debug)]
-#[command(name = "bllvm-sign")]
+#[command(name = "blvm-sign")]
 #[command(about = "Sign governance messages for Bitcoin Commons governance operations")]
 struct Args {
     /// Output file for the signature

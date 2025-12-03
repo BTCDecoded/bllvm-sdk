@@ -5,8 +5,8 @@
 //! This tool collects signatures from multiple maintainers and creates a
 //! single signature file that can be verified against a multisig threshold.
 
-use bllvm_sdk::cli::input::parse_comma_separated;
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use blvm_sdk::cli::input::parse_comma_separated;
+use blvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use clap::Parser;
 use serde_json::Value;
 use std::fs;
@@ -14,7 +14,7 @@ use std::path::Path;
 
 /// Aggregate multiple signatures into a single file
 #[derive(Parser, Debug)]
-#[command(name = "bllvm-aggregate-signatures")]
+#[command(name = "blvm-aggregate-signatures")]
 #[command(about = "Aggregate multiple signatures into a single multisig signature file")]
 struct Args {
     /// Output file for aggregated signatures

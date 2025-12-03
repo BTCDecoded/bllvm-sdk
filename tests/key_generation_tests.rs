@@ -2,7 +2,7 @@
 //!
 //! Tests for key generation edge cases and validation.
 
-use bllvm_sdk::governance::GovernanceKeypair;
+use blvm_sdk::governance::GovernanceKeypair;
 
 #[test]
 fn test_keypair_generation_randomness() {
@@ -41,7 +41,7 @@ fn test_keypair_serialization_roundtrip() {
 
     // Test public key serialization
     let pubkey_bytes = keypair.public_key().to_bytes();
-    let reconstructed_pubkey = bllvm_sdk::governance::PublicKey::from_bytes(&pubkey_bytes).unwrap();
+    let reconstructed_pubkey = blvm_sdk::governance::PublicKey::from_bytes(&pubkey_bytes).unwrap();
     assert_eq!(keypair.public_key(), reconstructed_pubkey);
 
     // Test secret key serialization
@@ -75,7 +75,7 @@ fn test_invalid_public_key_handling() {
     ];
 
     for invalid_key in invalid_keys {
-        let result = bllvm_sdk::governance::PublicKey::from_bytes(&invalid_key);
+        let result = blvm_sdk::governance::PublicKey::from_bytes(&invalid_key);
         assert!(result.is_err());
     }
 }

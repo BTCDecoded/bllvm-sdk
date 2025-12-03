@@ -2,10 +2,10 @@
 //!
 //! Tests for node composition, module registry, lifecycle, and configuration.
 
-use bllvm_sdk::composition::config::NodeMetadata;
-use bllvm_sdk::composition::schema::validate_config_schema;
-use bllvm_sdk::composition::validation::validate_composition;
-use bllvm_sdk::composition::{
+use blvm_sdk::composition::config::NodeMetadata;
+use blvm_sdk::composition::schema::validate_config_schema;
+use blvm_sdk::composition::validation::validate_composition;
+use blvm_sdk::composition::{
     ModuleHealth, ModuleLifecycle, ModuleRegistry, ModuleSource, ModuleSpec, ModuleStatus,
     NetworkType, NodeComposer, NodeConfig, NodeSpec, NodeStatus, Result, ValidationResult,
 };
@@ -400,7 +400,7 @@ fn test_validate_config_schema_invalid_network() {
 #[test]
 fn test_validate_config_schema_module_warning() {
     // Test validation warns about missing module version
-    use bllvm_sdk::composition::config::ModuleConfig;
+    use blvm_sdk::composition::config::ModuleConfig;
     let mut modules = HashMap::new();
     modules.insert(
         "test-module".to_string(),

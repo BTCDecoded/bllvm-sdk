@@ -4,4 +4,4 @@
 //!
 //! Module manifest parsing and validation for module.toml files.
 
-pub use bllvm_node::module::registry::manifest::ModuleManifest;
+pub use blvm_node::module::registry::manifest::ModuleManifest;

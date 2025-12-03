@@ -2,15 +2,15 @@
 //!
 //! Generate governance keypairs for Bitcoin governance operations.
 
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
-use bllvm_sdk::governance::GovernanceKeypair;
+use blvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use blvm_sdk::governance::GovernanceKeypair;
 use clap::Parser;
 use std::fs;
 // No need for Path import
 
 /// Generate governance keypairs
 #[derive(Parser, Debug)]
-#[command(name = "bllvm-keygen")]
+#[command(name = "blvm-keygen")]
 #[command(about = "Generate governance keypairs for Bitcoin Commons governance operations")]
 struct Args {
     /// Output file for the keypair

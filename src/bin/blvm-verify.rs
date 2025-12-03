@@ -2,16 +2,16 @@
 //!
 //! Verify governance signatures and multisig thresholds.
 
-use bllvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
-use bllvm_sdk::governance::{GovernanceMessage, Multisig, PublicKey, Signature};
+use blvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
+use blvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use blvm_sdk::governance::{GovernanceMessage, Multisig, PublicKey, Signature};
 use clap::{Parser, Subcommand};
 use std::fs;
 use std::path::Path;
 
 /// Verify governance signatures
 #[derive(Parser, Debug)]
-#[command(name = "bllvm-verify")]
+#[command(name = "blvm-verify")]
 #[command(about = "Verify governance signatures and multisig thresholds")]
 struct Args {
     /// Output format (text, json)
@@ -122,7 +122,7 @@ fn verify_message(args: &Args) -> Result<VerificationResult, Box<dyn std::error:
     for signature in &signatures {
         let mut verified = false;
         for public_key in &public_keys {
-            if bllvm_sdk::governance::verify_signature(signature, &message_bytes, public_key)? {
+            if blvm_sdk::governance::verify_signature(signature, &message_bytes, public_key)? {
                 verified = true;
                 break;
             }

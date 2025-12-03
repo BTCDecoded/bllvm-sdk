@@ -2,12 +2,12 @@
 //!
 //! Command-line interface for composing Bitcoin nodes from modules.
 
-use bllvm_sdk::composition::*;
+use blvm_sdk::composition::*;
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
 #[derive(Parser)]
-#[command(name = "bllvm-compose")]
+#[command(name = "blvm-compose")]
 #[command(about = "Compose Bitcoin nodes from modules", long_about = None)]
 struct Cli {
     #[command(subcommand)]

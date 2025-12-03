@@ -5,9 +5,9 @@
 //! This tool verifies that binaries and verification bundles are signed by
 //! authorized maintainers and match their cryptographic hashes.
 
-use bllvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
-use bllvm_sdk::governance::{Multisig, PublicKey, Signature};
+use blvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
+use blvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use blvm_sdk::governance::{Multisig, PublicKey, Signature};
 use clap::{Parser, Subcommand};
 use sha2::{Digest, Sha256};
 use std::fs;
@@ -15,7 +15,7 @@ use std::path::Path;
 
 /// Verify binary and verification bundle signatures
 #[derive(Parser, Debug)]
-#[command(name = "bllvm-verify-binary")]
+#[command(name = "blvm-verify-binary")]
 #[command(about = "Verify binary and verification bundle signatures for Bitcoin Commons releases")]
 struct Args {
     /// Output format (text, json)
@@ -203,7 +203,7 @@ fn verify_target(args: &Args) -> Result<VerificationResult, Box<dyn std::error::
     for signature in &signatures {
         let mut verified = false;
         for public_key in &public_keys {
-            match bllvm_sdk::governance::verify_signature(signature, &message_bytes, public_key) {
+            match blvm_sdk::governance::verify_signature(signature, &message_bytes, public_key) {
                 Ok(true) => {
                     verified = true;
                     break;

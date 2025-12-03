@@ -2,8 +2,8 @@
 //!
 //! Tests for CLI input/output formatting and parsing utilities.
 
-use bllvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
-use bllvm_sdk::cli::output::{OutputFormat, OutputFormatter};
+use blvm_sdk::cli::input::{parse_comma_separated, parse_threshold};
+use blvm_sdk::cli::output::{OutputFormat, OutputFormatter};
 use std::error::Error;
 
 // ============================================================================

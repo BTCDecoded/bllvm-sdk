@@ -5,8 +5,8 @@
 use crate::composition::conversion::*;
 use crate::composition::registry::ModuleRegistry;
 use crate::composition::types::*;
-use bllvm_node::module::manager::ModuleManager;
-use bllvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
+use blvm_node::module::manager::ModuleManager;
+use blvm_node::module::traits::ModuleMetadata as RefModuleMetadata;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
